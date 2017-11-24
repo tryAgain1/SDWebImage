@@ -27,22 +27,41 @@
     if (imageFormat == SDImageFormatGIF) {
         image = [UIImage sd_animatedGIFWithData:data];
     }
+//#ifdef SD_WEBP
+//    else if (imageFormat == SDImageFormatWebP)
+//    {
+//        image = [UIImage sd_imageWithWebPData:data];
+//    }
+//#endif
+//    else {
+//        image = [[UIImage alloc] initWithData:data];
+//#if SD_UIKIT || SD_WATCH
+//        UIImageOrientation orientation = [self sd_imageOrientationFromImageData:data];
+//        if (orientation != UIImageOrientationUp) {
+//            image = [UIImage imageWithCGImage:image.CGImage
+//                                        scale:image.scale
+//                                  orientation:orientation];
+//        }
+//#endif
+//    }
+     
 #ifdef SD_WEBP
     else if (imageFormat == SDImageFormatWebP)
     {
-        image = [UIImage sd_imageWithWebPData:data];
+         image = [UIImage sd_imageWithWebPData:data];
     }
 #endif
     else {
-        image = [[UIImage alloc] initWithData:data];
-#if SD_UIKIT || SD_WATCH
-        UIImageOrientation orientation = [self sd_imageOrientationFromImageData:data];
-        if (orientation != UIImageOrientationUp) {
-            image = [UIImage imageWithCGImage:image.CGImage
-                                        scale:image.scale
-                                  orientation:orientation];
-        }
-#endif
+         image = [[UIImage alloc] initWithData:data];
+         if (data.length/1024 > 128) {
+              image = [self compressImageWith:image];
+         }
+         UIImageOrientation orientation = [self sd_imageOrientationFromImageData:data];
+         if (orientation != UIImageOrientationUp) {
+              image = [UIImage imageWithCGImage:image.CGImage
+                                          scale:image.scale
+                                    orientation:orientation];
+         }
     }
 
 
